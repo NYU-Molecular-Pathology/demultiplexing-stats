@@ -98,6 +98,7 @@ colnames(top_unknown_barcodes_df) <-gsub(pattern = "\\s", replacement = "", x = 
 # unknown_barcodes_numeric_cols <- c()
 # top_unknown_barcodes_df
 ```
+
 # Lane Metrics
 
 ```{r}
