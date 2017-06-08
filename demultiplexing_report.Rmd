@@ -8,12 +8,11 @@ output:
     keep_md: yes
     number_sections: true
     toc: true
-    toc_float: true
 ---
 <!-- Setup the R code to be used in R Markdown generation throughout the report -->
 ```{r setup, include=FALSE} 
 # {.tabset} # .tabset-fade .tabset-pills
-
+    # toc_float: true
 # ~~~~~ SETTINGS ~~~~~ #
 knitr::opts_chunk$set(echo = FALSE)
 
