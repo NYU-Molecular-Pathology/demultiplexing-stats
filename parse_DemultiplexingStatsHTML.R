@@ -59,9 +59,9 @@ read_sum_df <- aggregate(  PF_Clusters  ~ Sample , data = lane_summary_df, FUN =
 
 
 # plot
-ggplot(lane_summary_df, aes(x = Sample, y = PF_Clusters/1000000)) +   geom_bar(aes(fill = Lane), position = "dodge", stat="identity") + ylab("Millions of Reads") + xlab("Sample") + ggtitle("Barcode Read Count per Sample per Lane") + coord_flip()
+ggplot(lane_summary_df, aes(x = Sample, y = PF_Clusters/1000000)) +   geom_bar(aes(fill = Lane), position = "dodge", stat="identity") + ylab("Millions of Reads") + xlab("Sample") + ggtitle("Barcode Matched Read Count per Sample per Lane") + coord_flip()
 
-ggplot(read_sum_df, aes(x = Sample, y = PF_Clusters/1000000)) +   geom_bar(position = "dodge", stat="identity") + ylab("Millions of Reads") + xlab("Sample") + ggtitle("Total Barcode Read Count per Sample") + coord_flip()
+ggplot(read_sum_df, aes(x = Sample, y = PF_Clusters/1000000)) +   geom_bar(position = "dodge", stat="identity") + ylab("Millions of Reads") + xlab("Sample") + ggtitle("Total Barcode Matched Read Count per Sample") + coord_flip()
 
 
 
