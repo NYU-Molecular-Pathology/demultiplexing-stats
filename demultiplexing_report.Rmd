@@ -134,10 +134,10 @@ for(demult_file in demult_files){
 
 ```
 
-System location: 
+Demultiplexing output location: 
 
 ```{r}
-mycat(normalizePath('.'))
+mycat(normalizePath('Unaligned'))
 ```
 
 # Lane Metrics
