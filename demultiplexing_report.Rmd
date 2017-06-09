@@ -134,6 +134,12 @@ for(demult_file in demult_files){
 
 ```
 
+System location: 
+
+```{r}
+mycat(normalizePath('.'))
+```
+
 # Lane Metrics
 
 ```{r}
