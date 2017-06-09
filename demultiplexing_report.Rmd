@@ -87,15 +87,51 @@ pcnt_perfect_barcode_plot <- ggplot(lane_sample_summary, aes(x = Sample, y = pcn
 ```
 
 ```{r unknown_barcodes}
+# from the HTML; this does not get imported correctly, so do not use it right now
 # 4
-top_unknown_barcodes_colnames <- c("Lane", "Count", "Sequence", "Lane", "Count", "Sequence", "Lane", 
-"Count", "Sequence", "Lane", "Count", "Sequence")
-
+# top_unknown_barcodes_colnames <- c("Lane", "Count", "Sequence", "Lane", "Count", "Sequence", "Lane", 
+# "Count", "Sequence", "Lane", "Count", "Sequence")
 # clean up colnames
-colnames(top_unknown_barcodes_df) <-gsub(pattern = "\\s", replacement = "", x = colnames(top_unknown_barcodes_df))
-
+# colnames(top_unknown_barcodes_df) <-gsub(pattern = "\\s", replacement = "", x = colnames(top_unknown_barcodes_df))
 # unknown_barcodes_numeric_cols <- c()
 # top_unknown_barcodes_df
+```
+
+```{r top_barcodes}
+# dir with demultiplexing output
+demult_dir <- "Unaligned" # 170602_NB501073_0012_AHCKYCBGX2/Data/Intensities/BaseCalls/Unaligned
+stats_dir <- file.path(demult_dir, "Stats")
+demult_files <- dir(stats_dir, full.names = TRUE, pattern = "DemuxSummary") # Stats/DemuxSummaryF1L1.txt, etc
+
+top_unknown_barcodes_df <- data.frame()
+for(demult_file in demult_files){
+    # get the lane number from the file name
+    lane_number <- gsub(pattern = '^.*L([[:digit:]]).txt', replacement = '\\1', x = basename(demult_file))
+    
+    # system grep search pattern
+    pattern <- "### Columns: Index_Sequence Hit_Count"
+    read_command <- sprintf("grep -A 10 '%s' %s", pattern, demult_file)
+    
+    # import the stats
+    df <- read.delim(pipe(read_command), header = TRUE, sep = '\t') 
+    
+    # clean up
+    df[["Barcode"]] <- rownames(df)
+    df[["Lane"]] <- lane_number
+    
+    rownames(df) <- seq(1:nrow(df))
+    colnames(df) <- c("Count", "Barcode", "Lane")
+    
+    df <- df[c("Lane", "Barcode", "Count")]
+    
+    # aggregate
+    if(ncol(top_unknown_barcodes_df) < 1){
+        top_unknown_barcodes_df <- df
+    } else {
+        top_unknown_barcodes_df <- cbind(top_unknown_barcodes_df, df)
+    }
+}
+
 ```
 
 # Lane Metrics
@@ -117,13 +153,10 @@ print(pcnt_perfect_barcode_plot)
 print(sample_reads_plot)
 ```
 
-
+# Top Unknown Barcodes
 
 ```{r, results='asis'}
-# Top Unknown Barcodes
-# kable(top_unknown_barcodes_df)
-# doesnt print correctly due to weird HTML formatting
-# maybe get this from the source files
+kable(top_unknown_barcodes_df)
 ```
 
 # System Information 
