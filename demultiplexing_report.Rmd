@@ -8,6 +8,7 @@ output:
     keep_md: yes
     number_sections: true
     toc: true
+    toc_depth: 3
 ---
 <!-- Setup the R code to be used in R Markdown generation throughout the report -->
 ```{r setup, include=FALSE} 
@@ -134,10 +135,50 @@ for(demult_file in demult_files){
 
 ```
 
+```{r sample_table}
+run_project <- unique(as.character(lane_sample_summary[["Project"]]))
+# run_summary_table <- lane_sample_summary[c("Lane", "Project", "Sample", "Barcode_sequence")]
+
+summary_cols <- c("Lane", "Project", "Sample", "Barcode_sequence")
+
+run_lanes <- unique(as.character(lane_sample_summary[["Lane"]]))
+
+run_summary <- list()
+
+for(lane in run_lanes){
+    lane_df <- lane_sample_summary[ which(as.character(lane_sample_summary[["Lane"]]) == lane), summary_cols]
+    run_summary[[lane]] <- lane_df
+}
+
+print_lane_df <- function(df, name){
+    mycat(sprintf('### Lane %s \n\n', name))
+    print(kable(df, row.names = FALSE))
+}
+
+```
+
+# Summary
+
+Project:
+
+```{r}
+mycat(run_project)
+```
+
 Demultiplexing output location: 
 
 ```{r}
 mycat(normalizePath('Unaligned'))
+```
+
+## Samples {.tabset .tabset-pills}
+
+```{r, results='asis'}
+for(i in seq_along(names(run_summary))){
+    name <- names(run_summary)[i]
+    df <- run_summary[i]
+    print_lane_df(df = df, name = name)
+}
 ```
 
 # Lane Metrics
