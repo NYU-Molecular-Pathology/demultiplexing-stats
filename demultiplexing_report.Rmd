@@ -157,7 +157,30 @@ print_lane_df <- function(df, name){
 
 ```
 
+```{r avg_undetermined_rating}
+avg_undetermined <- mean(undetermined_summary[["pcnt_of_thelane"]])
+print_undetermined_rating <- function(avg_undetermined){
+    determined_reads <- 100 - avg_undetermined
+    A <- '\n<span style="color:blue"><big><big><big><big>A</big></big></big></big></span>\n\n'
+    B <- '\n<span style="color:green"><big><big><big><big>B</big></big></big></big></span>\n\n'
+    C <- '\n<span style="color:yellow"><big><big><big><big>C</big></big></big></big></span>\n\n'
+    D <- '\n<span style="color:red"><big><big><big><big>D</big></big></big></big></span>\n\n'
+    if(determined_reads > 90){
+        mycat(A)
+    } else if (determined_reads > 80){
+        mycat(B)
+    } else if (determined_reads > 70) {
+        mycat(C)
+    } else {
+        mycat(D)
+    }
+    
+}
+
+```
+
 # Summary
+
 
 Project:
 
@@ -183,9 +206,19 @@ for(i in seq_along(names(run_summary))){
 
 # Lane Metrics
 
+## Undetermined Reads
+
+Undetermined Reads Score:
+
+```{r, results='asis'}
+print_undetermined_rating(avg_undetermined = avg_undetermined)
+```
+
 ```{r}
 print(pcnt_undetermined_plot)
 ```
+
+## Read Qualities
 
 ```{r, fig.height=12, fig.width=8}
 print(lane_reads_plot)
