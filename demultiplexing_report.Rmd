@@ -12,6 +12,7 @@ output:
 ---
 <!-- Setup the R code to be used in R Markdown generation throughout the report -->
 ```{r setup, include=FALSE} 
+#    df_print: paged
 # {.tabset} # .tabset-fade .tabset-pills
     # toc_float: true
 # ~~~~~ SETTINGS ~~~~~ #
@@ -22,6 +23,7 @@ library("ggplot2")
 library("XML")
 library("plyr")
 library("knitr")
+# library("DT")
 
 # ~~~~~ CUSTOM FUNCTIONS ~~~~~ #
 mycat <- function(text){
@@ -161,20 +163,22 @@ print_lane_df <- function(df, name){
 avg_undetermined <- mean(undetermined_summary[["pcnt_of_thelane"]])
 print_undetermined_rating <- function(avg_undetermined){
     determined_reads <- 100 - avg_undetermined
-    A <- '\n<span style="color:blue"><big><big><big><big>A</big></big></big></big></span>\n\n'
-    B <- '\n<span style="color:green"><big><big><big><big>B</big></big></big></big></span>\n\n'
-    C <- '\n<span style="color:yellow"><big><big><big><big>C</big></big></big></big></span>\n\n'
-    D <- '\n<span style="color:red"><big><big><big><big>D</big></big></big></big></span>\n\n'
     if(determined_reads > 90){
-        mycat(A)
+        print_big_color_boxed_text(message = "Undetermined Reads Score: A", border_color = "blue", text_color = "blue")
     } else if (determined_reads > 80){
-        mycat(B)
+        print_big_color_boxed_text(message = "Undetermined Reads Score: B", border_color = "green", text_color = "green")
     } else if (determined_reads > 70) {
-        mycat(C)
+        print_big_color_boxed_text(message = "Undetermined Reads Score: C", border_color = "yellow", text_color = "yellow")
+    } else if (determined_reads > 60) {
+        print_big_color_boxed_text(message = "Undetermined Reads Score: D", border_color = "red", text_color = "red")
     } else {
-        mycat(D)
+        print_big_color_boxed_text(message = "Undetermined Reads Score: F", border_color = "maroon", text_color = "maroon")
     }
     
+}
+
+print_big_color_boxed_text <- function(message, border_color, text_color){
+    mycat(sprintf('<p style="border:3px; border-style:solid; border-color:%s; padding: 1em;"><span style="color:%s"><big><big><big>%s</big></big></big></span></p>', border_color, text_color, message))
 }
 
 ```
@@ -202,13 +206,12 @@ for(i in seq_along(names(run_summary))){
     df <- run_summary[i]
     print_lane_df(df = df, name = name)
 }
+# datatable(lane_sample_summary[, summary_cols]) # keeps leaving a weird warning message in the document, hold off on this until later
 ```
 
 # Lane Metrics
 
 ## Undetermined Reads
-
-Undetermined Reads Score:
 
 ```{r, results='asis'}
 print_undetermined_rating(avg_undetermined = avg_undetermined)
